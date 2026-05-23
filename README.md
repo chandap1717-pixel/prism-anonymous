@@ -1,8 +1,8 @@
 # PriSM Anonymous Implementation
 
-This repository contains the anonymous implementation of PriSM for traffic forecasting.
+This repository provides the anonymous implementation of **PriSM** for traffic forecasting.
 
-PriSM is a prior-separated selective state-space model that decouples physical structural priors and lag-aware causal-context priors for traffic forecasting. The implementation provides the model, data loading pipeline, training scripts, evaluation metrics, and causal-prior construction script used in the submitted paper.
+PriSM is a prior-separated selective state-space model that decouples physical structural priors and lag-aware causal-context priors. The repository contains the model implementation, data loading pipeline, training and evaluation scripts, evaluation metrics, and the causal-prior construction script used in the submitted paper.
 
 ## Directory structure
 
@@ -20,7 +20,7 @@ PriSM is a prior-separated selective state-space model that decouples physical s
 └── datasets/
 ```
 
-The main files are:
+The main files are listed below.
 
 - `PriSM.py`: implementation of the PriSM model.
 - `main.py`: training and evaluation entry point.
@@ -68,7 +68,7 @@ PEMS08_pcmci_L3_alpha0.01_k10.npz
 PEMS08_pcmci_L2_alpha0.05_k20.npz
 ```
 
-The exact causal-prior hyperparameters are not fixed by the repository. If your causal-prior file uses a different name, pass it explicitly with `--causal_path`.
+The exact causal-prior hyperparameters are not fixed by the repository. If the causal-prior file is not automatically found or uses a different filename, pass it explicitly with `--causal_path`.
 
 For HZMetro and SHMetro, the physical supports are loaded from `graph_hz_conn.pkl` and `graph_sh_conn.pkl`, respectively. If a graph file is stored elsewhere, pass it with `--graph_path`.
 
@@ -111,7 +111,9 @@ bash scripts/run_hzmetro.sh
 bash scripts/run_shmetro.sh
 ```
 
-An equivalent direct command is:
+Equivalent direct commands are shown below.
+
+For PEMS08:
 
 ```bash
 python main.py \
@@ -140,7 +142,7 @@ python main.py \
   --pred_len 48
 ```
 
-If the causal-prior file does not use the default discovered filename, pass it explicitly:
+If the causal-prior file is not automatically found or uses a different filename, pass it explicitly:
 
 ```bash
 python main.py \
@@ -150,7 +152,7 @@ python main.py \
   --pred_len 48
 ```
 
-During local testing, you may use an absolute data path such as `/path/to/datasets`. For anonymous release, please avoid committing machine-specific paths into the repository.
+During local testing, an external data path can be specified with `--data_root`. The default examples above use `./datasets` for portability.
 
 ## Build lag-aware causal prior
 
@@ -181,4 +183,8 @@ PEMS08_pcmci_L3_alpha0.05_k20.npz
 
 This filename is only a convention. Any causal-prior file can be used by passing its path through `--causal_path`.
 
+## Notes
 
+Raw datasets, checkpoints, logs, running outputs, TensorBoard files, and model weights are not included in this anonymous repository.
+
+This repository is intended for anonymous review and reproducibility checking. A fully organized public release will be prepared after the review process.
