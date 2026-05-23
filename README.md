@@ -181,34 +181,4 @@ PEMS08_pcmci_L3_alpha0.05_k20.npz
 
 This filename is only a convention. Any causal-prior file can be used by passing its path through `--causal_path`.
 
-## Notes for anonymous submission
 
-Generated files are ignored by default. Please do not commit datasets, logs, checkpoints, running outputs, TensorBoard files, or model weights.
-
-Before submitting the anonymous repository, please check that the following items are not included:
-
-```text
-raw datasets
-checkpoints
-model weights
-logs
-runs
-wandb files
-machine-specific absolute paths
-personal names
-email addresses
-institution names
-API keys or tokens
-```
-
-A recommended final check is:
-
-```bash
-grep -RInE "/root|autodl|gmail|qq|github|token|password|api_key|secret" . \
-  --exclude-dir=".git" \
-  --exclude-dir="datasets" \
-  --exclude-dir="logs" \
-  --exclude-dir="checkpoints"
-```
-
-The repository is intended for anonymous review and reproducibility checking. A fully organized public release will be prepared after the review process.
