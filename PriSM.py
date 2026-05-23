@@ -182,7 +182,7 @@ class SSMLayer(nn.Module):
             self.dt_proj.bias.copy_(inv_dt)
 
 
-class AdaBiMambaBlock(nn.Module):
+class PriSMBlock(nn.Module):
     """Temporal-spatial SSM block with lag-aware context modulation."""
 
     def __init__(self, config: PriSMConfig):
@@ -305,7 +305,7 @@ class PriSM(nn.Module):
         super().__init__()
         self.config = config
         self.embedding = PriSMEmbedding(config)
-        self.layers = nn.ModuleList([AdaBiMambaBlock(config) for _ in range(config.n_layers)])
+        self.layers = nn.ModuleList([PriSMBlock(config) for _ in range(config.n_layers)])
         self.out_proj = nn.Sequential(
             nn.Linear(config.d_model * config.seq_len, config.d_model * config.seq_len),
             nn.GELU(),
