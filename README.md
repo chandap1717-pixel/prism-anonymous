@@ -68,17 +68,19 @@ PEMS08_pcmci_L3_alpha0.01_k10.npz
 PEMS08_pcmci_L2_alpha0.05_k20.npz
 ```
 
-The exact causal-prior hyperparameters are not fixed by the repository. If the causal-prior file is not automatically found or uses a different filename, pass it explicitly with `--causal_path`.
+The repository supports different causal-prior hyperparameters. For paper-style reproduction, please use the causal-prior settings specified in the running scripts or explicitly pass the desired prior file with `--causal_path`.
+
+If the causal-prior file is not automatically found or uses a different filename, pass it explicitly with `--causal_path`.
 
 For HZMetro and SHMetro, the physical supports are loaded from `graph_hz_conn.pkl` and `graph_sh_conn.pkl`, respectively. If a graph file is stored elsewhere, pass it with `--graph_path`.
 
 ## Lugu dataset
 
-Lugu is a newly constructed urban-road traffic dataset used in the submitted paper. To preserve anonymity and avoid releasing potentially sensitive raw traffic records before the completion of the de-identification process, the full Lugu dataset is not included in this anonymous repository.
+Lugu is a newly constructed urban-road traffic dataset used in the submitted paper. The full de-identified version is not included in this anonymous repository because the data release process is still under privacy and institutional review.
 
-This repository provides the expected data format, preprocessing pipeline, and causal-prior construction script. Detailed dataset statistics and construction information are reported in the appendix of the submitted paper.
+This repository provides the expected data format, preprocessing pipeline, and causal-prior construction script to support reproducibility checking. Detailed dataset statistics and construction information are reported in the appendix of the submitted paper.
 
-The full de-identified Lugu dataset is planned to be released after paper acceptance, subject to the completion of privacy review and data release procedures.
+The full de-identified Lugu dataset, together with the processed road-network support and preprocessing scripts, is planned to be released after paper acceptance once the data release procedure is completed.
 
 A recommended layout for Lugu is:
 
@@ -100,7 +102,7 @@ pip install -r requirements.txt
 
 The repository includes `pscan.py` and a cleaned `mamba_ssm/` directory for compatibility. The PriSM implementation mainly uses a task-adapted selective state-space block with a lightweight parallel scan implementation in `pscan.py`, rather than directly calling the official `Mamba` class.
 
-## Training
+## Training and evaluation
 
 Example scripts are provided under `scripts/`:
 
@@ -111,9 +113,18 @@ bash scripts/run_hzmetro.sh
 bash scripts/run_shmetro.sh
 ```
 
-Equivalent direct commands are shown below.
+For the standard forecasting setting reported in the main result table, use `--pred_len 12`. For the extended-horizon setting, set `--pred_len` to the evaluated horizon, such as 24, 36, or 48.
 
-For PEMS08:
+Example command for the standard 12-step setting:
+
+```bash
+python main.py \
+  --dataset PEMS08 \
+  --data_root ./datasets \
+  --pred_len 12
+```
+
+Example command for an extended 48-step setting:
 
 ```bash
 python main.py \
@@ -122,24 +133,14 @@ python main.py \
   --pred_len 48
 ```
 
-For HZMetro:
+For metro datasets, specify the physical graph path when necessary:
 
 ```bash
 python main.py \
   --dataset HZMetro \
   --data_root ./datasets \
   --graph_path ./datasets/HZMetro/graph_hz_conn.pkl \
-  --pred_len 48
-```
-
-For SHMetro:
-
-```bash
-python main.py \
-  --dataset SHMetro \
-  --data_root ./datasets \
-  --graph_path ./datasets/SHMetro/graph_sh_conn.pkl \
-  --pred_len 48
+  --pred_len 12
 ```
 
 If the causal-prior file is not automatically found or uses a different filename, pass it explicitly:
@@ -149,7 +150,7 @@ python main.py \
   --dataset PEMS08 \
   --data_root ./datasets \
   --causal_path ./datasets/PEMS08/PEMS08_pcmci_L3_alpha0.01_k10.npz \
-  --pred_len 48
+  --pred_len 12
 ```
 
 During local testing, an external data path can be specified with `--data_root`. The default examples above use `./datasets` for portability.
@@ -182,6 +183,8 @@ PEMS08_pcmci_L3_alpha0.05_k20.npz
 ```
 
 This filename is only a convention. Any causal-prior file can be used by passing its path through `--causal_path`.
+
+The lag-aware prior is constructed offline from the training split only and is kept fixed during model training, validation, and testing. It is used as a contextual semantic prior rather than as a ground-truth causal graph or a direct propagation adjacency matrix.
 
 ## Notes
 
